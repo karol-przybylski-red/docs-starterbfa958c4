@@ -18,22 +18,17 @@
     },
     {
       "type": "category",
-      "label": "Getting started",
+      "label": "RDK",
       "items": [
         {
           "type": "doc",
-          "id": "getting-started/quickstart",
-          "label": "Quickstart"
+          "id": "rdk-expertise/opportunities",
+          "label": "Opportunities"
         },
         {
           "type": "doc",
-          "id": "getting-started/set-up-your-first-project",
-          "label": "Set up your first project"
-        },
-        {
-          "type": "doc",
-          "id": "getting-started/configuration",
-          "label": "Configuration"
+          "id": "rdk-expertise/threats",
+          "label": "Threats"
         }
       ]
     },
@@ -50,22 +45,6 @@
           "type": "doc",
           "id": "editing-docs/docs-components",
           "label": "Docs components"
-        }
-      ]
-    },
-    {
-      "type": "category",
-      "label": "Customizing",
-      "items": [
-        {
-          "type": "doc",
-          "id": "customizing/customize-with-json-file",
-          "label": "Customize with json file"
-        },
-        {
-          "type": "doc",
-          "id": "customizing/customize-through-platform",
-          "label": "Customize through platform"
         }
       ]
     }

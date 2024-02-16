@@ -1,0 +1,58 @@
+# Code in RDK
+
+Code in RDK is often quite complex. 
+
+```cpp rdk_example.cpp {1,4-6,11}
+void AAMPGstPlayer::SignalConnect(gpointer instance, const gchar *detailed_signal, GCallback c_handler, gpointer data)
+{	
+	{
+		const std::lock_guard<std::mutex> lock(privateContext->mSignalVectorAccessMutex);
+		auto id = g_signal_connect(instance, detailed_signal, c_handler, data);
+		if(0<id)
+		{
+			AAMPLOG_MIL("AAMPGstPlayer: Connected %s", detailed_signal);
+			AAMPGstPlayerPriv::CallbackData Identifier{instance, id, detailed_signal};
+			privateContext->mCallBackIdentifiers.push_back(Identifier);
+		}
+		else
+		{
+			AAMPLOG_WARN("AAMPGstPlayer: Could not connect %s", detailed_signal);
+		}
+	}
+	privateContext->callbackControl.enable();
+}
+
+static constexpr int RECURSION_LIMIT = 10;
+
+/**
+ *  @brief GetElementPointers adds the supplied element/bin and any child elements up to RECURSION_LIMIT depth to elements
+ */
+static void GetElementPointers(gpointer pElementOrBin, std::set<gpointer>& elements, int& recursionCount)
+{
+	recursionCount++;
+	if(RECURSION_LIMIT < recursionCount)
+	{
+		AAMPLOG_ERR("recursion limit exceeded");
+	}
+	else if(GST_IS_ELEMENT(pElementOrBin))
+	{
+		elements.insert(pElementOrBin);
+		if(GST_IS_BIN(pElementOrBin))
+		{
+			for (auto currentListItem = GST_BIN_CHILDREN(reinterpret_cast<_GstElement*>(pElementOrBin));
+			currentListItem;
+			currentListItem = currentListItem->next)
+			{
+				auto currentChildElement = currentListItem->data;
+				if (nullptr != currentChildElement)
+				{
+					//Recursive function call to support nesting of gst elements up RECURSION_LIMIT
+					GetElementPointers(currentChildElement, elements, recursionCount);
+				}
+			}
+		}
+	}
+
+	recursionCount--;
+}
+```
